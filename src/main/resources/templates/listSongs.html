@@ -37,6 +37,14 @@
 </header>
 <main>
     <h2>Choose a song:</h2>
+    <div class="album-select-container">
+        <label for="albumSelect">Filter by Album:</label>
+        <select id="albumSelect" onchange="filterByAlbum()">
+            <option value="-1">All</option>
+            <option th:each="album : ${albums}" th:value="${album.id}" th:text="${album.name}"></option>
+        </select>
+    </div>
+
     <div class="flex">
         <form action="/artists/add-to-song" method="get">
             <div th:each="song : ${songs}">
@@ -62,6 +70,11 @@
         <a href="/songs/add-form" class="button">Add New Song</a>
     </div>
 </main>
-
+<script>
+    function filterByAlbum() {
+        const selectedAlbumId = document.getElementById('albumSelect').value;
+        window.location.href = `/songs?albumId=${selectedAlbumId}`;
+    }
+</script>
 </body>
 </html>

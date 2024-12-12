@@ -3,7 +3,6 @@ package mk.ukim.finki.wp.lab.web.controllers;
 import mk.ukim.finki.wp.lab.model.Song;
 import org.springframework.ui.Model;
 import mk.ukim.finki.wp.lab.service.AlbumService;
-import mk.ukim.finki.wp.lab.service.ArtistService;
 import mk.ukim.finki.wp.lab.service.SongService;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
@@ -15,19 +14,21 @@ import java.util.Optional;
 public class SongController {
     private final SongService songService;
     private final AlbumService albumService;
-    private final ArtistService artistService;
 
-
-    public SongController(SongService songService, AlbumService albumService, ArtistService artistService) {
+    public SongController(SongService songService, AlbumService albumService) {
         this.songService = songService;
         this.albumService = albumService;
-        this.artistService = artistService;
     }
 
     @GetMapping
-    public String getSongsPage(@RequestParam(required = false) String error, Model model){
-        model.addAttribute("songs", songService.listSongs());
-        model.addAttribute("error", error);
+    public String getSongsPage(@RequestParam(required = false) String error,@RequestParam(required = false) Long albumId, Model model){
+        if(albumId!=null && albumId!=-1) {
+            model.addAttribute("songs",songService.listSongsByAlbum(albumId));
+        } else {
+            model.addAttribute("songs",songService.listSongs());
+        }
+        model.addAttribute("error",error);
+        model.addAttribute("albums",albumService.findAll());
         return "listSongs";
     }
 

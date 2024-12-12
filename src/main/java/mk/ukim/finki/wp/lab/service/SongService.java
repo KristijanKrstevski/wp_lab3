@@ -9,12 +9,12 @@ import java.util.OptionalDouble;
 
 public interface SongService {
     List<Song> listSongs();
-    Artist addArtistToSong(Artist artist, Song song);
-    public Song findByTrackId(String trackId);
+    List<Song> listSongsByAlbum(Long albumId);
+    void findAndAddArtistToSong(Long artistId, Long songId);
+    Optional<Song> findByTrackId(String trackId);
+    Optional<Song> findById(long id);
+    void deleteById(long id);
     void save(Long id,String title, String trackId,String genre,int releaseYear, Long albumId);
     void removeArtistFromSong(Long songId, Long performerId);
-    void deleteById(long id);
-    Optional<Song> findById(long id);
-    void findAndAddArtistToSong(Long artistId, Long songId);
 
 }

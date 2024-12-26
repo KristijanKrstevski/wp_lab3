@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org"
+     >
 <head>
     <meta charset="utf-8">
     <title>Songs Homepage - Welcome to My Music Store</title>
@@ -26,7 +27,6 @@
             cursor: pointer;
         }
     </style>
-
 </head>
 <body>
 <header>
@@ -46,7 +46,8 @@
     </div>
 
     <div class="flex">
-        <form action="/artists/add-to-song" method="get">
+        <!-- Only show this form for admins -->
+        <form action="/artists/add-to-song" method="get" sec:authorize="hasRole('ROLE_ADMIN')">
             <div th:each="song : ${songs}">
                 <input type="radio" name="songId" th:value="${song.id}" required />
                 <a th:href="'/songs/details/' + ${song.id}" th:text="${song.title}"></a>
@@ -58,7 +59,19 @@
             <input type="submit" value="Submit">
         </form>
 
-        <form>
+        <!-- Show simple list for non-admin users -->
+        <div sec:authorize="!hasRole('ROLE_ADMIN')">
+            <div th:each="song : ${songs}">
+                <a th:href="'/songs/details/' + ${song.id}" th:text="${song.title}"></a>
+                , Album: <span style="color: #dc3545" th:text="${song.album.name}"></span>
+                , Genre: <span th:text="${song.genre}"></span>
+                , Release Year: <span th:text="${song.releaseYear}"></span>
+                <br/>
+            </div>
+        </div>
+
+        <!-- Only show edit/delete buttons for admins -->
+        <form sec:authorize="hasRole('ROLE_ADMIN')">
             <div th:each="song : ${songs}">
                 <button th:formaction="'/songs/delete/' + ${song.id}" method="post">Delete</button>
                 <button th:formaction="'/songs/edit/' + ${song.id}" method="get">Edit</button>
@@ -66,7 +79,8 @@
         </form>
     </div>
 
-    <div class="center-button" style="margin-top: 20px;">
+    <!-- Only show Add New Song button for admins -->
+    <div class="center-button" style="margin-top: 20px;" sec:authorize="hasRole('ROLE_ADMIN')">
         <a href="/songs/add-form" class="button">Add New Song</a>
     </div>
 </main>

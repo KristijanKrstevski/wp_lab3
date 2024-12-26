@@ -1,6 +1,7 @@
 package mk.ukim.finki.wp.lab.web.controllers;
 
 import mk.ukim.finki.wp.lab.model.Song;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.ui.Model;
 import mk.ukim.finki.wp.lab.service.AlbumService;
 import mk.ukim.finki.wp.lab.service.SongService;
@@ -31,18 +32,20 @@ public class SongController {
         model.addAttribute("albums",albumService.findAll());
         return "listSongs";
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/add")
     public String saveOrUpdateSong(@RequestParam(required = false) Long id, @RequestParam String title, @RequestParam String trackId, @RequestParam String genre, @RequestParam int releaseYear, @RequestParam Long albumId){
 
         songService.save(id,title,trackId,genre,releaseYear,albumId);
         return "redirect:/songs";
     }
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/add-form")
     public String getAddSongPage(Model model){
         model.addAttribute("albums",albumService.findAll());
         return "add-song";
     }
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/edit/{songId}")
     public String editSong(@PathVariable Long songId,Model model){
         Optional<Song> songToEdit = songService.findById(songId);
@@ -53,13 +56,13 @@ public class SongController {
         model.addAttribute("albums",albumService.findAll());
         return "add-song";
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @GetMapping("/delete/{id}")
     public String deleteSong(@PathVariable Long id){
         songService.deleteById(id);
         return "redirect:/songs";
     }
-
+    @PreAuthorize("hasRole('ADMIN')")
     @PostMapping("/performers/delete/{songId}/{performerId}")
     public String deletePerformerFromSong(@PathVariable Long songId, @PathVariable Long performerId) {
         songService.removeArtistFromSong(songId, performerId);
